@@ -6,33 +6,36 @@ stages {
 
 stage('Checkout') {
 steps {
-git 'https://github.com/user/devops-gitops-demo.git'
+git 'https://github.com/mahalakshmi191/devops-gitops-demo.git'
 }
 }
-
 
 stage('Build Image') {
 steps {
-sh 'docker build -t demo-app:v1 .'
+sh 'docker build -t lakshu18/demo-app:$BUILD_NUMBER .'
 }
 }
 
-
-stage('Docker Login') {
-steps {
-sh 'docker push demo-app:v1'
-}
-}
-
-
-stage('Deploy') {
+stage('Push Image') {
 steps {
 sh '''
-kubectl apply -f k8s/
+docker login -u lakshu18 -p PASSWORD
+docker push lakshu18/demo-app:$BUILD_NUMBER
+'''
+}
+}
+
+stage('Update Manifest') {
+steps {
+sh '''
+sed -i "s|lakshu18/demo-app:.*|lakshu18/demo-app:$BUILD_NUMBER|g" k8s/deployment.yaml
+
+git add .
+git commit -m "update image tag"
+git push
 '''
 }
 }
 
 }
-
 }
