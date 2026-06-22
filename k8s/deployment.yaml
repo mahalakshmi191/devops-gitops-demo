@@ -19,6 +19,6 @@ spec:
     spec:
       containers:
       - name: nginx
-        image: YOUR_DOCKERHUB/demo-app:v1
+        image: lakshu18/demo-app:v1
         ports:
         - containerPort: 80
